@@ -54,8 +54,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<int> fibonnaci = List<int>.generate(20, (i) => i);
-  late List<Widget> widgets = fibonnaci.map((i) => ListTile(title: Text((i == 0 || i == 1 ? fibonnaci[i]: fibonnaci[i-1] + fibonnaci[i-2]).toString()))).toList();
+  var liste = {"A","B","C","D","E"}.toList();
+  void _moveUp(int i) {
+    setState(() {
+      if (i == 0){
+        var old = liste[i];
+        liste[i] = liste.last;
+        liste[liste.length-1] = old;
+      }
+      else{
+        var old = liste[i];
+        liste[i] = liste[i-1];
+        liste[i - 1] = old;
+      }
+    });
+  }
+
+
+  void _moveDown(int i) {
+    setState(() {
+      if (i == liste[liste.length-1]){
+        var old = liste.last;
+        liste[liste.length-1] = liste[i];
+        liste[i] = old;
+      }
+      else{
+        var old = liste[i];
+        liste[i] = liste[i+1];
+        liste[i+1] = old;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,10 +125,20 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
 
             Expanded(child:
-            ListView(
-              children: <Widget>[
-                ...widgets,
-              ],
+            ListView.builder(
+              itemCount: liste.length,
+              prototypeItem: ListTile(title: Row(children: [Text(liste.first), MaterialButton(onPressed: (){_moveUp(0);}, child: Text("Move up"),), MaterialButton(onPressed: (){_moveDown(0);}, child: Text("Move down"),),],),),
+              itemBuilder: (context,index){
+                return Row(
+                  children: [
+                    Text(liste[index]),
+                    MaterialButton(onPressed: (){_moveUp(index);}, child: Text("Move up"),),
+                    MaterialButton(onPressed: (){_moveDown(index);}, child: Text("Move down"),),
+                  ],
+                );
+              },
+
+
             ),
             )
           ],
